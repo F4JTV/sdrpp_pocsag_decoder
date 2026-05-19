@@ -73,6 +73,7 @@ public:
         // Apply initial options to the protocol decoder
         decoder.setDecodeMode(decodeModes.value(dmId));
         decoder.setInverted(invert);
+        dsp.setLowPass(lowPass);
 
         // Wire the protocol decoder's message event to our static handler
         decoder.onMessage.bind(&POCSAGDecoder::messageHandler, this);
@@ -114,6 +115,17 @@ public:
             if (settingsCallback) { settingsCallback(); }
         }
 
+        // Audio-bandwidth low-pass filter after the FM demodulator.
+        // Modeled on the radio module's NFM "Low Pass" option, which is
+        // known to help significantly at low SNR by removing high-frequency
+        // noise before the matched filter and symbol decision.
+        if (ImGui::Checkbox(("Low Pass##pager_decoder_pocsag_lpf_" + name).c_str(),
+                            &lowPass))
+        {
+            dsp.setLowPass(lowPass);
+            if (settingsCallback) { settingsCallback(); }
+        }
+
         // Symbol-diagram visualisation of the soft decisions
         ImGui::FillWidth();
         diag.draw();
@@ -144,6 +156,7 @@ public:
     int  getBaudrate()   const { return baudrates.value(brId); }
     int  getDecodeMode() const { return (int)decodeModes.value(dmId); }
     bool getInverted()   const { return invert; }
+    bool getLowPass()    const { return lowPass; }
 
     void setBaudrateFromConfig(int baud) {
         if (!baudrates.keyExists(baud)) { return; }
@@ -163,6 +176,11 @@ public:
         invert = inv;
         decoder.setInverted(inv);
         decoder.reset();
+    }
+
+    void setLowPassFromConfig(bool lp) {
+        lowPass = lp;
+        dsp.setLowPass(lp);
     }
 
     // Settings-changed callback (main.cpp uses this to persist to JSON)
@@ -210,9 +228,10 @@ private:
     ImGui::SymbolDiagram               diag;
 
     // UI state
-    int  brId   = 0;
-    int  dmId   = 0;
-    bool invert = false;
+    int  brId    = 0;
+    int  dmId    = 0;
+    bool invert  = false;
+    bool lowPass = true;       // Default on - significant low-SNR benefit
     OptionList<int, int>                               baudrates;
     OptionList<pocsag::DecodeMode, pocsag::DecodeMode> decodeModes;
 

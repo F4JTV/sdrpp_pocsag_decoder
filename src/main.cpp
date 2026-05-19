@@ -141,6 +141,9 @@ private:
         if (c.contains("invert")) {
             decoder->setInvertedFromConfig(c["invert"].get<bool>());
         }
+        if (c.contains("lowPass")) {
+            decoder->setLowPassFromConfig(c["lowPass"].get<bool>());
+        }
         if (c.contains("snapInterval")) {
             int snap = c["snapInterval"].get<int>();
             if (snapIntervals.keyExists(snap)) {
@@ -164,6 +167,7 @@ private:
         config.conf[name]["baudrate"]          = decoder->getBaudrate();
         config.conf[name]["decodeMode"]        = decoder->getDecodeMode();
         config.conf[name]["invert"]            = decoder->getInverted();
+        config.conf[name]["lowPass"]           = decoder->getLowPass();
         config.conf[name]["snapInterval"]      = snapIntervals.value(snapId);
         config.conf[name]["logToFile"]         = logToFile;
         config.conf[name]["logFolder"]         = logFolderSelect.path;

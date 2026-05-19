@@ -16,6 +16,10 @@ in the SDR++ source tree.
 - **Auto / Numeric / Alphanumeric** decode modes. In *Auto*, function bits
   drive the choice as per ITU-R M.584-2.
 - **Inverted FSK polarity** toggle for non-standard networks.
+- **Audio-bandwidth low-pass filter** (modeled on the radio module's NFM
+  Low Pass option). Enabled by default. Significantly improves decoding at
+  low SNR by removing high-frequency noise before the matched filter and
+  symbol decision.
 - **Detached messages window** with:
   - Timestamp, CAPCODE, function bits, decode type, FEC counters, content
   - "Hide errors" filter (default on) — hides messages with any
