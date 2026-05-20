@@ -46,17 +46,12 @@ Install the SDR++ build dependencies:
 sudo apt install --no-install-recommends \
     build-essential cmake pkg-config \
     libfftw3-dev libglfw3-dev libvolk-dev libzstd-dev
-```
 
-Replace the stock `decoder_modules/pager_decoder` folder in the SDR++ source
-tree with this one, then build:
-
-```bash
 git clone https://github.com/AlexandreRouma/SDRPlusPlus.git
-cd SDRPlusPlus
-rm -rf decoder_modules/pager_decoder
-cp -r /path/to/this/pager_decoder decoder_modules/
-
+cd SDRPlusPlus/decoder_modules
+rm -rf ./pager_decoder
+git clone https://github.com/F4JTV/pager_decoder.git
+cd ..
 mkdir -p build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DOPT_BUILD_PAGER_DECODER=ON
 make -j$(nproc)
